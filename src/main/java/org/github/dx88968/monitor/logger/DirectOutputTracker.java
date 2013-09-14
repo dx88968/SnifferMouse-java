@@ -101,6 +101,7 @@ public class DirectOutputTracker extends Traceable{
 	}
 	
 	public void print(String traceMark,TraceLevel level,String content){
+		System.out.println(content);
 		if (activePipelines==null || activePipelines.size()<=0) {
 			return;
 		}
@@ -185,16 +186,24 @@ public class DirectOutputTracker extends Traceable{
 		
 		@Override
 		public void print(String traceMark,TraceLevel level,String content){
-			System.err.println("Direct tracer is not initialized, try to initialize now");
 			try {
 				init();
 				instance.print(traceMark, level, content);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.err.println("Snipper Mouse can not be initialized for"+e.getMessage());
+				instance=new DisabledTracer();
 			}
 		}
 		
+	}
+	
+	static class DisabledTracer extends DirectOutputTracker{
+		
+		@Override
+		public void print(String traceMark,TraceLevel level,String content){
+			System.out.println(content);
+		}
 	}
 
 }
