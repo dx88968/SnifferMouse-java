@@ -28,13 +28,9 @@ public class DirectOutputTracker extends Traceable{
 	}
 	
 	public static void init() throws Exception{
-		if (instance==null || instance instanceof NotInitTarcer) {
-			String port_Str=System.getProperty("org.github.dx88968.serverport");
-			if (port_Str==null) {
-				Auditor.getInstance(Constants.DEFAULTSERVERPORT);
-			}else{
-				Auditor.getInstance(Integer.parseInt(port_Str));
-			}
+		if (instance==null || instance instanceof NotInitTarcer||instance instanceof DisabledTracer) {
+			Constants.loadConstants();
+			Auditor.getInstance(Constants.DEFAULTSERVERPORT);
 			instance=new DirectOutputTracker();
 		}
 	}
