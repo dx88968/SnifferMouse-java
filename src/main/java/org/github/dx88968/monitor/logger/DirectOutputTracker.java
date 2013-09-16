@@ -97,7 +97,6 @@ public class DirectOutputTracker extends Traceable{
 	}
 	
 	public void print(String traceMark,TraceLevel level,String content){
-		System.out.println(content);
 		if (activePipelines==null || activePipelines.size()<=0) {
 			return;
 		}
@@ -198,7 +197,6 @@ public class DirectOutputTracker extends Traceable{
 		
 		@Override
 		public void print(String traceMark,TraceLevel level,String content){
-			System.out.println(content);
 		}
 	}
 

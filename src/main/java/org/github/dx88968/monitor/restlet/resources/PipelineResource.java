@@ -80,7 +80,7 @@ public class PipelineResource extends ServerResource{
 		} catch (Exception e) {
 			//e.printStackTrace();
 			JSONObject returnMessage=new JSONObject();
-			returnMessage.put("error", "session expires");
+			returnMessage.put("error", "session expires or missing arguments");
 			Representation  rep = new StringRepresentation(returnMessage.toJSONString(),MediaType.APPLICATION_JSON);
 			return rep;
 		}
