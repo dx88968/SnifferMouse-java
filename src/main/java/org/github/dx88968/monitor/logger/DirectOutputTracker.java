@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.github.dx88968.monitor.logger.TraceEvent.Event;
 import org.github.dx88968.monitor.restlet.Auditor;
 import org.github.dx88968.monitor.restlet.ResourceStates;
 import org.github.dx88968.monitor.restlet.ResourceType;
@@ -53,6 +54,14 @@ public class DirectOutputTracker extends Traceable{
 			returnValue.add(condition);
 		}
 		return returnValue;
+	}
+	
+	public void waitfor(Event e){
+		synchronized (e) {
+			try {
+				e.wait();
+			} catch (InterruptedException e1) {}
+		}
 	}
 		
 	/*
@@ -121,11 +130,22 @@ public class DirectOutputTracker extends Traceable{
 			}
 		}
 	}
+	
+	public void join(){
+		waitfor(TraceEvent.SessionIdle);
+		stop();
+	}
 
 	@Override
 	public void stop() {
 		// TODO Auto-generated method stub
-		instance=new NotInitTarcer();
+		try {
+			Auditor.getInstance().terminate();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		instance=new DisabledTracer();
 	}
 
 	@Override
@@ -177,6 +197,20 @@ public class DirectOutputTracker extends Traceable{
 	}
 	
 	static class NotInitTarcer extends DirectOutputTracker{
+		
+		@Override
+		public void waitfor(Event e){
+			try {
+				init();
+				synchronized (e) {
+					try {
+						e.wait();
+					} catch (InterruptedException e1) {}
+				}
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
 		
 		
 		@Override

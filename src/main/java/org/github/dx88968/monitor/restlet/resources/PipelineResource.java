@@ -7,6 +7,7 @@ import java.util.List;
 import org.github.dx88968.monitor.logger.DirectOutputTracker;
 import org.github.dx88968.monitor.logger.Pipeline;
 import org.github.dx88968.monitor.logger.Session;
+import org.github.dx88968.monitor.logger.TraceEvent;
 import org.github.dx88968.monitor.utils.AddressUtil;
 import org.github.dx88968.monitor.utils.Constants;
 import org.json.simple.JSONArray;
@@ -67,6 +68,9 @@ public class PipelineResource extends ServerResource{
 				//System.out.println("timestamp is "+timestamp);
 				session=pipeline.getSession(Integer.parseInt(key),timestamp);
 				List<String> lines = session.getBuffer();
+				if (lines==null || lines.size()==0) {
+					TraceEvent.SessionIdle.emit();
+				}
 				JSONArray lineArray=new JSONArray();
 				Iterator<String> iter = lines.iterator();
 				while (iter.hasNext()) {
@@ -106,6 +110,7 @@ public class PipelineResource extends ServerResource{
 				returnMessage.put("info", AddressUtil.constructJsonObject(getReference(), pipeline));
 				Session session;
 				session=pipeline.createSession();
+				TraceEvent.SessionCreated.emit();
 				returnMessage.put("sessionkey", session.getKey());
 				returnMessage.put("timestamp", session.getTimestamp());
 			}

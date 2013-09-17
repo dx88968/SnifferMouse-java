@@ -118,6 +118,15 @@ public class Auditor {
 		if(resources.contains(id)){
 			resources.get(id).stop();
 		}
+		synchronized (instance) {
+			instance.notifyAll();
+		}
+	}
+	
+	public void join() throws InterruptedException{
+		synchronized (instance) {
+			instance.wait();
+		}
 	}
 	
 	
@@ -132,6 +141,10 @@ public class Auditor {
         		a.remove(r);
         	}
         }
+	}
+	
+	public void terminate() throws Exception{
+		component.stop();
 	}
 	
 }
