@@ -3,6 +3,7 @@ package org.github.dx88968.monitor.utils;
 public class Constants {
 	
 	public static void loadConstants(){
+		//load custom Constants  
 		Integer port=toInteger(System.getProperty("org.github.dx88968.serverport"));
 		if (port!=null) {
 			DEFAULTSERVERPORT=port;
@@ -54,4 +55,6 @@ public class Constants {
 	public static int MAX_THOURGHOUT=10000;
 	public static int SESSIONTIMEOUT=3;
 	public static int DEFAULTSERVERPORT=9002;
+	public static int MAX_RETRIES=3;
+	public static int RETRY_INTERVAL=300;
 }

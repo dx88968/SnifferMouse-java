@@ -1,6 +1,9 @@
 package org.github.dx88968.monitor.utils;
 
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import java.util.Iterator;
+import java.util.Set;
 
 
 import org.github.dx88968.monitor.restlet.Traceable;
@@ -29,9 +32,9 @@ public class AddressUtil {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static JSONObject parseArgs(String arg) {
+	public static JSONObject parseArgs(String urlParameters) {
 		JSONObject returnMessage=new JSONObject();
-		String[] group1 = arg.split("&");
+		String[] group1 = urlParameters.split("&");
 		for(String s:group1){
 			String[] group2=s.split("=");
 			if (group2.length<2) {
@@ -41,6 +44,25 @@ public class AddressUtil {
 			}
 		}
 		return returnMessage;
+	}
+	
+	public static String createUrlParameters(JSONObject params) {
+		StringBuffer uString=new StringBuffer();
+		try{
+			Set<?> keys = params.keySet();
+			Iterator<?> iter = keys.iterator();
+			while (iter.hasNext()) {
+				String key = (String) iter.next();
+				if (uString.length()==0) {
+					uString.append(key).append("=").append(URLEncoder.encode((String) params.get(key), "UTF-8"));
+				}else{
+					uString.append("&").append(key).append("=").append(URLEncoder.encode((String) params.get(key), "UTF-8"));
+				}
+			}
+			return uString.toString();
+		}catch(Exception e){
+			return uString.toString();
+		}
 	}
 	
 	 public static String  unescape (String src)

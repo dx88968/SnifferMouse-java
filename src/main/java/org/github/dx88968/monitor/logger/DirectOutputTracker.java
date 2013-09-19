@@ -22,6 +22,7 @@ import org.github.dx88968.monitor.utils.StackUtils;
 public class DirectOutputTracker extends Traceable{
 	
 	ConcurrentHashMap<Condition, Pipeline> activePipelines;
+	long serial=0;// 0 is reserved value indicating serial is not set
 	public static DirectOutputTracker instance=new NotInitTarcer();
 	
 	private DirectOutputTracker(){
@@ -36,6 +37,13 @@ public class DirectOutputTracker extends Traceable{
 		}
 	}
 	
+	/*
+	 * 0 is reserved value indicating serial is not set
+	 */
+	public long getSerial() {
+		return serial;
+	}
+
 	public List<Pipeline> getPipelines() {
 		Enumeration<Pipeline> pipelines = activePipelines.elements();
 		List<Pipeline> returnValue=new ArrayList<>();
@@ -57,11 +65,7 @@ public class DirectOutputTracker extends Traceable{
 	}
 	
 	public void waitfor(Event e){
-		synchronized (e) {
-			try {
-				e.wait();
-			} catch (InterruptedException e1) {}
-		}
+		e.waitForEmit();
 	}
 		
 	/*
@@ -125,7 +129,7 @@ public class DirectOutputTracker extends Traceable{
 		Condition tempCondition=null;
 		while(iter.hasNext()){
 			tempCondition=iter.next();
-			if (tempCondition.satisfy(tarCondition)) {
+			if (tarCondition.satisfy(tempCondition)) {
 				activePipelines.get(tempCondition).writeline(attach+content);
 			}
 		}
@@ -146,6 +150,7 @@ public class DirectOutputTracker extends Traceable{
 			e.printStackTrace();
 		}
 		instance=new DisabledTracer();
+		TraceEvent.disable();
 	}
 
 	@Override
@@ -198,15 +203,12 @@ public class DirectOutputTracker extends Traceable{
 	
 	static class NotInitTarcer extends DirectOutputTracker{
 		
+		
 		@Override
 		public void waitfor(Event e){
 			try {
 				init();
-				synchronized (e) {
-					try {
-						e.wait();
-					} catch (InterruptedException e1) {}
-				}
+				e.waitForEmit();
 			} catch (Exception e2) {
 				e2.printStackTrace();
 			}

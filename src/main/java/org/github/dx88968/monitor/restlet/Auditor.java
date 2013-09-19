@@ -7,6 +7,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.github.dx88968.monitor.restlet.resources.ControllerResource;
 import org.github.dx88968.monitor.restlet.resources.PipelineResource;
 import org.github.dx88968.monitor.restlet.resources.TraceResource;
 import org.github.dx88968.monitor.utils.Constants;
@@ -26,6 +27,7 @@ public class Auditor {
 	Component component;
 	
 	private Auditor(int port) throws Exception{
+		
 		// Disable annoying console logging of requests..
 	    Logger logger = Logger.getLogger("org.restlet");
 	    for (Handler handler : logger.getParent().getHandlers()) {
@@ -36,6 +38,7 @@ public class Auditor {
 	            handler.setLevel(Level.SEVERE);
 	        }
 	    }
+	    JHttpAgent.securePort(port);
 		resources=new ConcurrentHashMap<>();
 		component = new Component();
         component.getServers().add(Protocol.HTTP, port);
@@ -45,6 +48,7 @@ public class Auditor {
 	public static Auditor getInstance(int port) throws Exception{
 		if(instance==null){
 			instance=new Auditor(port);
+			instance.startService("/Control", ControllerResource.class);
 			instance.startService("/Trace", TraceResource.class);
 		}
 		return instance;
