@@ -2,7 +2,13 @@ package org.github.dx88968.monitor.utils;
 
 public class Constants {
 	
+	public static boolean isLocked=false;
+	
 	public static void loadConstants(){
+		//Constant has already set by J2EE container/Server, not override them
+		if (isLocked) {
+			return;
+		}
 		//load custom Constants  
 		Integer port=toInteger(System.getProperty("org.github.dx88968.serverport"));
 		if (port!=null) {
@@ -26,7 +32,7 @@ public class Constants {
 		}
 	}
 	
-	private static Integer toInteger(String tar){
+	public static Integer toInteger(String tar){
 		try {
 			return Integer.parseInt(tar);
 		} catch (Exception e) {
@@ -50,6 +56,7 @@ public class Constants {
 	public static final String ParamsInterval=";";
 	public static final String BEWTEEN_CALSS_METHOD="#";
 	public static final String END_SUMMERY=":";
+	public static final String SERIAL="2jw83jeaonn89sa1asadbjkollpoiokku";
 	public static int MAX_NUM_PIPELINE=100;
 	public static int MAX_NUM_SESSION_EACH_PIPELINE=10;
 	public static int MAX_THOURGHOUT=10000;

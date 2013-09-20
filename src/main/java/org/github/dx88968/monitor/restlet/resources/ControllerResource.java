@@ -1,6 +1,7 @@
 package org.github.dx88968.monitor.restlet.resources;
 
 import org.github.dx88968.monitor.logger.DirectOutputTracker;
+import org.github.dx88968.monitor.utils.Constants;
 import org.json.simple.JSONObject;
 import org.restlet.data.Form;
 import org.restlet.data.MediaType;
@@ -39,12 +40,7 @@ public class ControllerResource extends ServerResource{
 	        }
 	        responseHeaders.add("Access-Control-Allow-Origin", "*");
 	        JSONObject returnMessage= new JSONObject();
-	        if (DirectOutputTracker.instance.getSerial()==0) {
-	        	returnMessage.put("status", "alive");
-				returnMessage.put("error", "Serial number is not set yet");
-			}else{
-				returnMessage.put("status", "alive");
-			}
+	        returnMessage.put("serial", Constants.SERIAL);
 			Representation  rep = new StringRepresentation(returnMessage.toJSONString(),MediaType.APPLICATION_JSON);
 			return rep;
 		} catch (Exception e) {

@@ -47,7 +47,7 @@ public class AddressUtil {
 	}
 	
 	public static String createUrlParameters(JSONObject params) {
-		StringBuffer uString=new StringBuffer();
+		StringBuilder uString=new StringBuilder();
 		try{
 			Set<?> keys = params.keySet();
 			Iterator<?> iter = keys.iterator();

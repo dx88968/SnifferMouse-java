@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -54,7 +55,7 @@ public class JHttpAgent {
 		if (response==null) {
 			return false;
 		}
-		return response.contains("alive");
+		return response.contains(Constants.SERIAL);
 	}
 	
 	
@@ -68,7 +69,7 @@ public class JHttpAgent {
 	      connection = (HttpURLConnection)url.openConnection();
 	      connection.setRequestMethod(method);
 	      connection.setRequestProperty("Content-Type", 
-	           "application/x-www-form-urlencoded");
+	           "text/xml; charset=UTF-8");
 				
 	      connection.setRequestProperty("Content-Length", "" + 
 	               Integer.toString(urlParameters.getBytes().length));
@@ -87,7 +88,7 @@ public class JHttpAgent {
 
 	      //Get Response	
 	      InputStream is = connection.getInputStream();
-	      BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+	      BufferedReader rd = new BufferedReader(new InputStreamReader(is,"UTF-8"));
 	      String line;
 	      StringBuffer response = new StringBuffer(); 
 	      while((line = rd.readLine()) != null) {
@@ -97,8 +98,11 @@ public class JHttpAgent {
 	      rd.close();
 	      return response.toString();
 
-	    } catch (Exception e) {
-	      return null;
+	    }catch(ConnectException ne){
+	    	return null;
+	    }
+	    catch (Exception e) {
+	    	return "unknown error";
 	    } finally {
 
 	      if(connection != null) {
